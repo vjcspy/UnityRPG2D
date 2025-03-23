@@ -10,21 +10,20 @@ namespace Player
         [SerializeField] private LayerMask groundLayer;
         [SerializeField] private Transform groundCheck;
         [SerializeField] private float groundCheckRadius = 0.2f;
+
         private bool isJumpPressed;
         private float movementInput;
-
         private Rigidbody2D rb;
 
         private void Awake()
         {
             rb = GetComponent<Rigidbody2D>();
 
-            // Nếu chưa gán groundCheck trong Inspector thì tạo tự động
             if (groundCheck == null)
             {
                 var gc = new GameObject("GroundCheck");
                 gc.transform.SetParent(transform);
-                gc.transform.localPosition = new Vector3(0f, -1.36f, 0f); // chỉnh sao cho đúng vị trí chân
+                gc.transform.localPosition = new Vector3(0f, -1.36f, 0f);
                 groundCheck = gc.transform;
             }
         }
@@ -37,15 +36,15 @@ namespace Player
 
         private void FixedUpdate()
         {
-            // Di chuyển ngang
             rb.linearVelocity = new Vector2(movementInput * moveSpeed, rb.linearVelocity.y);
 
-            // Nhảy
             if (isJumpPressed)
             {
                 rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
                 isJumpPressed = false;
             }
+
+            HandleFlip();
         }
 
         private void OnDrawGizmosSelected()
@@ -55,6 +54,16 @@ namespace Player
                 Gizmos.color = Color.red;
                 Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
             }
+        }
+
+        private void HandleFlip()
+        {
+            transform.localScale = rb.linearVelocity.x switch
+            {
+                > 0 => new Vector3(1, 1, 1),
+                < 0 => new Vector3(-1, 1, 1),
+                _ => transform.localScale
+            };
         }
 
         private bool IsGrounded()
