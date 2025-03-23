@@ -30,7 +30,6 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         movementInput = Input.GetAxisRaw("Horizontal");
-        // Debug.Log("IsGrounded: " + IsGrounded());
         if (Input.GetButtonDown("Jump") && IsGrounded())
         {
             isJumpPressed = true;
