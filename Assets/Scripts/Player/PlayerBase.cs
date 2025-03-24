@@ -2,7 +2,7 @@
 
 namespace Player
 {
-    public class PlayerBase: MonoBehaviour
+    public abstract class PlayerBase: MonoBehaviour
     {
         protected static readonly int IsMovingParam = Animator.StringToHash("isMoving");
         protected static readonly int IsGroundedParam = Animator.StringToHash("isMoving");
