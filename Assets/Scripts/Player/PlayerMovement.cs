@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Player
 {
     [RequireComponent(typeof(Rigidbody2D))]
-    public class PlayerMovement : MonoBehaviour
+    public class PlayerMovement : PlayerBase
     {
         [SerializeField] private float moveSpeed = 5f;
         [SerializeField] private float jumpForce = 2f;
@@ -31,11 +31,12 @@ namespace Player
         private void Update()
         {
             movementInput = Input.GetAxisRaw("Horizontal");
-            if (Input.GetButtonDown("Jump") && IsGrounded()) isJumpPressed = true;
+            if (Input.GetButtonDown("Jump") && IsGrounded) isJumpPressed = true;
         }
 
         private void FixedUpdate()
         {
+            checkIsGrounded();
             rb.linearVelocity = new Vector2(movementInput * moveSpeed, rb.linearVelocity.y);
 
             if (isJumpPressed)
@@ -66,9 +67,9 @@ namespace Player
             };
         }
 
-        private bool IsGrounded()
+        private void checkIsGrounded()
         {
-            return Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+            IsGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
         }
     }
 }
