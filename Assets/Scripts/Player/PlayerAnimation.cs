@@ -14,8 +14,9 @@ namespace Player
 
         private void Update()
         {
-            var isMoving = Mathf.Abs(playerRb.linearVelocity.x) != 0.0f;
-            animator.SetBool(IsMovingParam, isMoving);
+            animator.SetBool(IsMovingParam, IsMoving);
+            animator.SetBool(IsGroundedParam, IsGrounded);
+            animator.SetFloat(YVelocityParam, playerRb.linearVelocity.y);
         }
     }
 }

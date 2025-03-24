@@ -32,11 +32,13 @@ namespace Player
         {
             _movementInput = Input.GetAxisRaw("Horizontal");
             if (Input.GetButtonDown("Jump") && IsGrounded) _isJumpPressed = true;
+            CheckIsGrounded();
+            CheckIsMoving();
         }
 
         private void FixedUpdate()
         {
-            CheckIsGrounded();
+
             _playerRb.linearVelocity = new Vector2(_movementInput * moveSpeed, _playerRb.linearVelocity.y);
 
             if (_isJumpPressed)
@@ -68,6 +70,11 @@ namespace Player
         private void CheckIsGrounded()
         {
             IsGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+        }
+
+        private void CheckIsMoving()
+        {
+            IsMoving = Mathf.Abs(_playerRb.linearVelocity.x) != 0.0f;
         }
     }
 }
