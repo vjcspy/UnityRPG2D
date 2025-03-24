@@ -11,13 +11,13 @@ namespace Player
         [SerializeField] private Transform groundCheck;
         [SerializeField] private float groundCheckRadius = 0.2f;
 
-        private bool isJumpPressed;
-        private float movementInput;
-        private Rigidbody2D rb;
+        private bool _isJumpPressed;
+        private float _movementInput;
+        private Rigidbody2D _playerRb;
 
         private void Awake()
         {
-            rb = GetComponent<Rigidbody2D>();
+            _playerRb = GetComponent<Rigidbody2D>();
 
             if (groundCheck == null)
             {
@@ -30,19 +30,19 @@ namespace Player
 
         private void Update()
         {
-            movementInput = Input.GetAxisRaw("Horizontal");
-            if (Input.GetButtonDown("Jump") && IsGrounded) isJumpPressed = true;
+            _movementInput = Input.GetAxisRaw("Horizontal");
+            if (Input.GetButtonDown("Jump") && IsGrounded) _isJumpPressed = true;
         }
 
         private void FixedUpdate()
         {
-            checkIsGrounded();
-            rb.linearVelocity = new Vector2(movementInput * moveSpeed, rb.linearVelocity.y);
+            CheckIsGrounded();
+            _playerRb.linearVelocity = new Vector2(_movementInput * moveSpeed, _playerRb.linearVelocity.y);
 
-            if (isJumpPressed)
+            if (_isJumpPressed)
             {
-                rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-                isJumpPressed = false;
+                _playerRb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+                _isJumpPressed = false;
             }
 
             HandleFlip();
@@ -50,16 +50,14 @@ namespace Player
 
         private void OnDrawGizmosSelected()
         {
-            if (groundCheck != null)
-            {
-                Gizmos.color = Color.red;
-                Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
-            }
+            if (groundCheck == null) return;
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
         }
 
         private void HandleFlip()
         {
-            transform.localScale = rb.linearVelocity.x switch
+            transform.localScale = _playerRb.linearVelocity.x switch
             {
                 > 0 => new Vector3(1, 1, 1),
                 < 0 => new Vector3(-1, 1, 1),
@@ -67,7 +65,7 @@ namespace Player
             };
         }
 
-        private void checkIsGrounded()
+        private void CheckIsGrounded()
         {
             IsGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
         }
